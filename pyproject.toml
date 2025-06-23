@@ -10,7 +10,7 @@ authors = [
     { name = "Harry Lokeren", email = "harry.vyvey@lokeren.be" }
 ]
 dependencies = [
-    "requests"
+    "requests",
     "json"
 ]
 
