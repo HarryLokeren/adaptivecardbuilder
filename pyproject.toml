@@ -10,8 +10,7 @@ authors = [
     { name = "Harry Lokeren", email = "harry.vyvey@lokeren.be" }
 ]
 dependencies = [
-    "requests",
-    "json"
+    "requests"
 ]
 readme = "README.md"
 license = { text = "Stad Lokeren" }
