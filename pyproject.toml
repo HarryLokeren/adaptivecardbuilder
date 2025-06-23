@@ -13,6 +13,9 @@ dependencies = [
     "requests",
     "json"
 ]
+readme = "README.md"
+license = { text = "Stad Lokeren" }
+py-modules = ["adaptive_card_builder"]
 
 [project.urls]
 Homepage = "https://github.com/HarryLokeren/adaptivecardbuilder"
