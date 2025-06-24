@@ -15,8 +15,5 @@ dependencies = [
 readme = "README.md"
 license = { text = "Stad Lokeren" }
 
-[tool.setuptools]
-py-modules = ["adaptivecardbuilder"]
-
 [project.urls]
 Homepage = "https://github.com/HarryLokeren/adaptivecardbuilder"
