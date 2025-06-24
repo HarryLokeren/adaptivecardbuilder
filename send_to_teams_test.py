@@ -1,4 +1,4 @@
-from adaptivecardbuilder.builder import AdaptiveCardBuilder
+from adaptivecardbuilder import AdaptiveCardBuilder
 
 card = AdaptiveCardBuilder()
 card.add_text_block("📊 System Health Report", size="medium", weight="bolder")
