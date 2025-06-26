@@ -3,6 +3,28 @@ import requests
 from datetime import datetime
 
 class AdaptiveCardBuilder:
+    emoji = {
+        "success": "✅",
+        "failure": "❌",
+        "warning": "⚠️",
+        "info": "ℹ️",
+        "download": "⬇️",
+        "upload": "📤",
+        "clock": "🕒",
+        "file": "📄",
+        "folder": "📁",
+        "check": "✔️",
+        "cross": "❎",
+        "rocket": "🚀",
+        "bug": "🐞",
+        "lock": "🔒",
+        "unlocked": "🔓",
+        "search": "🔍",
+        "fire": "🔥",
+        "bell": "🔔",
+        "gear": "⚙️",
+    }
+    
     def __init__(self, version="1.2"):
         self.card = {
             "type": "message",
