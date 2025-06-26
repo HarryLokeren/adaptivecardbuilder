@@ -1,6 +1,6 @@
 import json
 import requests
-
+from datetime import datetime
 
 class AdaptiveCardBuilder:
     def __init__(self, version="1.2"):
@@ -81,6 +81,67 @@ class AdaptiveCardBuilder:
                 "type": "ColumnSet",
                 "columns": row_columns
             })
+
+    def add_item(self, name, size_kb=None, status=None, date_modified=None, type_=None, source=None, date_downloaded=False):
+        """Dynamically add a row of data based on provided fields."""
+        if not name:
+            raise ValueError("Name is required")
+
+        # Determine which columns to show
+        columns = {"Name": name}
+
+        if size_kb is not None:
+            columns["Size (kB)"] = size_kb
+        if status is not None:
+            columns["Status"] = status
+        if date_modified is not None:
+            columns["Date Modified"] = date_modified
+        if type_ is not None:
+            columns["Type"] = type_
+        if source is not None:
+            columns["Source"] = source
+        if date_downloaded:
+            columns["Date Downloaded"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+        # Insert headers once per structure (based on column keys)
+        if not hasattr(self, "_column_headers") or self._column_headers != list(columns.keys()):
+            self._column_headers = list(columns.keys())
+            header_columns = [
+                {
+                    "type": "Column",
+                    "items": [{
+                        "type": "TextBlock",
+                        "text": f"**{key}**",
+                        "weight": "bolder",
+                        "wrap": True
+                    }],
+                    "width": "stretch"
+                }
+                for key in columns
+            ]
+            self.body.append({
+                "type": "ColumnSet",
+                "columns": header_columns
+            })
+
+        # Now add the actual values
+        row_columns = [
+            {
+                "type": "Column",
+                "items": [{
+                    "type": "TextBlock",
+                    "text": str(value),
+                    "wrap": True
+                }],
+                "width": "stretch"
+            }
+            for value in columns.values()
+        ]
+
+        self.body.append({
+            "type": "ColumnSet",
+            "columns": row_columns
+        })
 
     def send_to_teams(self, webhook_url):
         headers = {
