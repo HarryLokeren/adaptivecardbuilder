@@ -24,7 +24,7 @@ card.add_error_block("❌ File upload failed: permission denied.")
 # Add rows with dynamic columns — only provided fields are shown
 card.add_item(
     name="report.csv",
-    size_kb="432",
+    size_kb="432kb",
     status="Uploaded",
     source="SharePoint",
     date_downloaded=True
@@ -40,9 +40,6 @@ print(AdaptiveCardBuilder.emoji["success"])  # ✅
 print(AdaptiveCardBuilder.emoji["failure"])  # ❌
 print(AdaptiveCardBuilder.emoji["file"])     # 📄
 
+---
 
-
-#---
-
-#Would you like this as a downloadable file or committed directly into your GitHub repo via a PR/template? Let me know!
 
