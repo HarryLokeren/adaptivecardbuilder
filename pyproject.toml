@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "adaptivecardbuilder"
-version = "0.1.1"
+version = "0.1.2"
 description = "A helper for building and sending Adaptive Cards to Microsoft Teams"
 authors = [
     { name = "Harry Lokeren", email = "harry.vyvey@lokeren.be" }

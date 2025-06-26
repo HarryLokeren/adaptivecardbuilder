@@ -143,6 +143,26 @@ class AdaptiveCardBuilder:
             "columns": row_columns
         })
 
+    def add_error_block(self, text):
+        """Add a styled error block with dark red background and white text."""
+        error_block = {
+            "type": "Container",
+            "style": "attention",  # built-in red background style
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": text,
+                    "wrap": True,
+                    "weight": "bolder",
+                    "color": "light",  # white text
+                    "spacing": "medium"
+                }
+            ],
+            "bleed": True,
+            "spacing": "medium"
+        }
+        self.body.append(error_block)
+        
     def send_to_teams(self, webhook_url):
         headers = {
             "Content-Type": "application/json"
