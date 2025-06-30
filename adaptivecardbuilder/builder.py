@@ -105,7 +105,7 @@ class AdaptiveCardBuilder:
                 "columns": row_columns
             })
 
-    def add_item(self, name, size_kb=None, status=None, date_modified=None, type_=None, source=None, date_downloaded=False, tablename=None):
+    def add_item(self, name,tablename=None, size_kb=None, status=None, date_modified=None, type_=None, source=None, date_downloaded=False):
         """
         Add a row to a table.
 
