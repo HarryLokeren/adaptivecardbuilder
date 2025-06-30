@@ -41,6 +41,7 @@ class AdaptiveCardBuilder:
             ]
         }
         self.body = self.card["attachments"][0]["content"]["body"]
+        self._tables = {}
 
     def add_text_block(self, text, size="default", weight="default", color="default", wrap=True, spacing=None):
         block = {
@@ -104,66 +105,120 @@ class AdaptiveCardBuilder:
                 "columns": row_columns
             })
 
-    def add_item(self, name, size_kb=None, status=None, date_modified=None, type_=None, source=None, date_downloaded=False):
-        """Dynamically add a row of data based on provided fields."""
+    def add_item(self, name, size_kb=None, status=None, date_modified=None, type_=None, source=None, date_downloaded=False, tablename=None):
+        """
+        Add a row to a table.
+
+        If `tablename` is provided:
+            - Creates a new titled table with headers if not already started.
+            - Otherwise appends a row to that table.
+
+        If `tablename` is not provided:
+            - Assumes one unnamed table (no title).
+            - Ensures consistent structure across all rows.
+        """
         if not name:
             raise ValueError("Name is required")
 
-        # Determine which columns to show
-        columns = {"Name": name}
-
+        # Build row data
+        row = {"Name": name}
         if size_kb is not None:
-            columns["Size (kB)"] = size_kb
+            row["Size (kB)"] = size_kb
         if status is not None:
-            columns["Status"] = status
+            row["Status"] = status
         if date_modified is not None:
-            columns["Date Modified"] = date_modified
+            row["Date Modified"] = date_modified
         if type_ is not None:
-            columns["Type"] = type_
+            row["Type"] = type_
         if source is not None:
-            columns["Source"] = source
+            row["Source"] = source
         if date_downloaded:
-            columns["Date Downloaded"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+            row["Date Downloaded"] = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-        # Insert headers once per structure (based on column keys)
-        if not hasattr(self, "_column_headers") or self._column_headers != list(columns.keys()):
-            self._column_headers = list(columns.keys())
-            header_columns = [
-                {
-                    "type": "Column",
-                    "items": [{
-                        "type": "TextBlock",
-                        "text": f"**{key}**",
-                        "weight": "bolder",
-                        "wrap": True
-                    }],
-                    "width": "stretch"
-                }
-                for key in columns
-            ]
-            self.body.append({
-                "type": "ColumnSet",
-                "columns": header_columns
-            })
+        column_keys = list(row.keys())
 
-        # Now add the actual values
+        # Handle named table
+        if tablename:
+            if not hasattr(self, "_tables"):
+                self._tables = {}
+
+            if tablename not in self._tables:
+                self._tables[tablename] = column_keys
+
+                # Add table title
+                self.add_text_block(tablename, size="medium", weight="bolder", spacing="large")
+
+                # Add headers
+                header_columns = [
+                    {
+                        "type": "Column",
+                        "items": [{
+                            "type": "TextBlock",
+                            "text": f"**{key}**",
+                            "weight": "bolder",
+                            "wrap": True
+                        }],
+                        "width": "stretch"
+                    }
+                    for key in column_keys
+                ]
+                self.body.append({
+                    "type": "ColumnSet",
+                    "columns": header_columns
+                })
+            else:
+                if self._tables[tablename] != column_keys:
+                    raise ValueError(
+                        f"Table '{tablename}' has different columns.\nExpected: {self._tables[tablename]}\nGot: {column_keys}"
+                    )
+        else:
+            # Anonymous table support
+            if not hasattr(self, "_default_table_headers"):
+                self._default_table_headers = column_keys
+
+                # No title, but add headers
+                header_columns = [
+                    {
+                        "type": "Column",
+                        "items": [{
+                            "type": "TextBlock",
+                            "text": f"**{key}**",
+                            "weight": "bolder",
+                            "wrap": True
+                        }],
+                        "width": "stretch"
+                    }
+                    for key in column_keys
+                ]
+                self.body.append({
+                    "type": "ColumnSet",
+                    "columns": header_columns
+                })
+            else:
+                if self._default_table_headers != column_keys:
+                    raise ValueError(
+                        "Default table already initialized with different columns.\n"
+                        f"Expected: {self._default_table_headers}\nGot: {column_keys}"
+                    )
+
+        # Add row
         row_columns = [
             {
                 "type": "Column",
                 "items": [{
                     "type": "TextBlock",
-                    "text": str(value),
+                    "text": str(val),
                     "wrap": True
                 }],
                 "width": "stretch"
             }
-            for value in columns.values()
+            for val in row.values()
         ]
-
         self.body.append({
             "type": "ColumnSet",
             "columns": row_columns
         })
+
 
     def add_error_block(self, text):
         """Add a styled error block with dark red background and white text."""
